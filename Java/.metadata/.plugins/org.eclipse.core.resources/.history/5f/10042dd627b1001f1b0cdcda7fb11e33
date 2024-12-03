@@ -1,0 +1,151 @@
+package vffv;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class xxxx extends JFrame {
+
+    public JTextField nameField;
+    public JComboBox<String> equipmentComboBox;
+    public JComboBox<String> typeComboBox;
+    public JCheckBox installationCheckBox;
+    public JTextField usagePeriodField;
+    public JTextField costField;
+    public JTextArea resultArea;
+
+ 
+    public String[] equipmentOptions = {"Компьютер", "Принтер", "Сканер"};
+    public String[] typeOptions = {"Офисное", "Промышленное", "Бытовое"};
+
+    // Массивы для хранения данных
+    public String[] dataFields = new String[6]; // Имя, Оборудование, Вид, Требуется установка, Срок использования, Стоимость
+
+    public xxxx() {
+        super("Оборудование");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Панель для ввода данных
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+        // Имя клиента
+        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        namePanel.add(new JLabel("Имя клиента:"));
+        nameField = new JTextField(20);
+        namePanel.add(nameField);
+        inputPanel.add(namePanel);
+
+        // Оборудование
+        JPanel equipmentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        equipmentPanel.add(new JLabel("Оборудование:"));
+        equipmentComboBox = new JComboBox<>(equipmentOptions);
+        equipmentPanel.add(equipmentComboBox);
+        inputPanel.add(equipmentPanel);
+
+        // Вид оборудования
+        JPanel typePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        typePanel.add(new JLabel("Вид оборудования:"));
+        typeComboBox = new JComboBox<>(typeOptions);
+        typePanel.add(typeComboBox);
+        inputPanel.add(typePanel);
+
+        // Требуется установка или нет
+        JPanel installationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        installationPanel.add(new JLabel("Требуется установка:"));
+        installationCheckBox = new JCheckBox();
+        installationPanel.add(installationCheckBox);
+        inputPanel.add(installationPanel);
+
+        // Срок полезного использования
+        JPanel usagePeriodPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        usagePeriodPanel.add(new JLabel("Срок полезного использования (лет):"));
+        usagePeriodField = new JTextField(10);
+        usagePeriodPanel.add(usagePeriodField);
+        inputPanel.add(usagePeriodPanel);
+
+        // Стоимость 
+        JPanel costPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        costPanel.add(new JLabel("Стоимость в рублях:"));
+        costField = new JTextField(10);
+        costPanel.add(costField);
+        inputPanel.add(costPanel);
+
+        add(inputPanel, BorderLayout.CENTER);
+
+        // Кнопка результатов и  вывода результатов
+        JPanel buttonAndResultPanel = new JPanel();
+        buttonAndResultPanel.setLayout(new BoxLayout(buttonAndResultPanel, BoxLayout.Y_AXIS));
+
+        JButton resultButton = new JButton("Результат");
+        resultButton.addActionListener(new ResultButtonListener());
+        buttonAndResultPanel.add(resultButton);
+
+        resultArea = new JTextArea(10, 30);
+        resultArea.setEditable(false);
+
+        JScrollPane scrollPane = new JScrollPane(resultArea);
+
+        buttonAndResultPanel.add(scrollPane);
+
+        add(buttonAndResultPanel, BorderLayout.EAST);
+
+        pack();
+        setLocationRelativeTo(null); 
+        setVisible(true);
+    }
+
+    public class ResultButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String name = nameField.getText().trim();
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(xxxx.this, "Пожалуйста, введите имя клиента.");
+                return;
+            }
+            dataFields[0] = name;
+
+            String equipment = (String) equipmentComboBox.getSelectedItem();
+            dataFields[1] = equipment;
+
+            String type = (String) typeComboBox.getSelectedItem();
+            dataFields[2] = type;
+
+            boolean requiresInstallation = installationCheckBox.isSelected();
+            dataFields[3] = requiresInstallation ? "Да" : "Нет";
+
+            int usagePeriod;
+            try {
+                usagePeriod = Integer.parseInt(usagePeriodField.getText().trim());
+                dataFields[4] = String.valueOf(usagePeriod);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(xxxx.this, "Срок полезного использования должен быть целым числом.");
+                return;
+            }
+
+            double cost;
+            try {
+                cost = Double.parseDouble(costField.getText().trim());
+                dataFields[5] = String.valueOf(cost);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(xxxx.this, "Стоимость должна быть числом.");
+                return;
+            }
+
+            StringBuilder resultText = new StringBuilder();
+            resultText.append("Здравствуйте, ").append(dataFields[0]).append("!\n");
+            resultText.append("Выбранное оборудование:\n");
+            resultText.append("Название: ").append(dataFields[1]).append("\n");
+            resultText.append("Вид: ").append(dataFields[2]).append("\n");
+            resultText.append("Требуется установка: ").append(dataFields[3]).append("\n");
+            resultText.append("Срок полезного использования (лет): ").append(dataFields[4]).append("\n");
+            resultText.append("Стоимость в рублях: ").append(dataFields[5]).append("\n");
+
+            resultArea.setText(resultText.toString());
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(xxxx::new);
+    }
+}

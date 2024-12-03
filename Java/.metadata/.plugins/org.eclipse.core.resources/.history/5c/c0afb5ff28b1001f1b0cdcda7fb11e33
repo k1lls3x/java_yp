@@ -1,0 +1,77 @@
+package vffv;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.swing.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class xxxxTest {
+
+    private xxxx frame;
+
+    @BeforeEach
+    void setUp() {
+        // Создаем экземпляр основного класса для тестирования
+        frame = new xxxx();
+    }
+
+    @Test
+    void testInitialFieldValues() {
+        // Проверяем, что поле имени при инициализации НЕ пустое (это неправильно, так как оно должно быть пустым)
+        assertEquals("Иван", frame.nameField.getText()); // Некорректный тест
+        assertEquals("", frame.usagePeriodField.getText()); // Это правильная проверка
+        assertEquals("", frame.costField.getText()); // Это правильная проверка
+    }
+
+
+    @Test
+    void testComboBoxDefaults() {
+        // Проверяем, что в комбобоксах выбраны первые значения по умолчанию
+        assertEquals("Компьютер", frame.equipmentComboBox.getSelectedItem());
+        assertEquals("Офисное", frame.typeComboBox.getSelectedItem());
+    }
+
+    @Test
+    void testCheckBoxDefault() {
+        // Проверяем, что чекбокс "Требуется установка" не выбран по умолчанию
+        assertFalse(frame.installationCheckBox.isSelected());
+    }
+
+
+
+    @Test
+    void testResultGeneration() {
+        // Устанавливаем тестовые значения для всех полей
+        frame.nameField.setText("Иван");
+        frame.equipmentComboBox.setSelectedItem("Принтер");
+        frame.typeComboBox.setSelectedItem("Промышленное");
+        frame.installationCheckBox.setSelected(true);
+        frame.usagePeriodField.setText("5");
+        frame.costField.setText("10000");
+
+        // Нажимаем кнопку "Результат"
+        JButton resultButton = getResultButton();
+        resultButton.doClick();
+
+        // Проверяем текст, выводимый в resultArea
+        String expectedResult = """
+                Здравствуйте, Иван!
+                Выбранное оборудование:
+                Название: Принтер
+                Вид: Промышленное
+                Требуется установка: Да
+                Срок полезного использования (лет): 5
+                Стоимость в рублях: 10000
+                """;
+    }
+
+    
+
+    // Вспомогательный метод для получения кнопки "Результат"
+    private JButton getResultButton() {
+        JPanel buttonPanel = (JPanel) frame.getContentPane().getComponent(1);
+        return (JButton) buttonPanel.getComponent(0);
+    }
+}
